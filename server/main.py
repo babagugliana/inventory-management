@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
+from datetime import datetime
+from uuid import uuid4
 from pydantic import BaseModel
 from mock_data import inventory_items, orders, demand_forecasts, backlog_items, spending_summary, monthly_spending, category_spending, recent_transactions, purchase_orders
 
@@ -122,6 +124,22 @@ class CreatePurchaseOrderRequest(BaseModel):
     unit_cost: float
     expected_delivery_date: str
     notes: Optional[str] = None
+
+class Task(BaseModel):
+    id: str
+    title: str
+    priority: str = 'medium'
+    status: str = 'pending'
+    dueDate: Optional[str] = None
+
+class CreateTaskRequest(BaseModel):
+    title: str
+    priority: str = 'medium'
+    dueDate: Optional[str] = None
+
+# Tasks have no JSON fixture — they are created at runtime and live only for the
+# lifetime of the process, like every other write in this demo.
+tasks: List[dict] = []
 
 # API endpoints
 @app.get("/")
@@ -316,6 +334,76 @@ def get_monthly_trends(
     result = list(months.values())
     result.sort(key=lambda x: x['month'])
     return result
+
+@app.get("/api/tasks", response_model=List[Task])
+def get_tasks():
+    """Get all runtime-created tasks"""
+    return tasks
+
+@app.post("/api/tasks", response_model=Task, status_code=201)
+def create_task(request: CreateTaskRequest):
+    """Create a task"""
+    task = {
+        "id": f"task-{uuid4().hex[:8]}",
+        "title": request.title,
+        "priority": request.priority,
+        "status": "pending",
+        "dueDate": request.dueDate
+    }
+    tasks.append(task)
+    return task
+
+@app.patch("/api/tasks/{task_id}", response_model=Task)
+def toggle_task(task_id: str):
+    """Toggle a task between pending and completed"""
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    task["status"] = "pending" if task["status"] == "completed" else "completed"
+    return task
+
+@app.delete("/api/tasks/{task_id}")
+def delete_task(task_id: str):
+    """Delete a task"""
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    tasks.remove(task)
+    return {"deleted": task_id}
+
+@app.post("/api/purchase-orders", response_model=PurchaseOrder, status_code=201)
+def create_purchase_order(request: CreatePurchaseOrderRequest):
+    """Raise a purchase order against a backlog item"""
+    if not any(item["id"] == request.backlog_item_id for item in backlog_items):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Backlog item {request.backlog_item_id} not found"
+        )
+
+    purchase_order = {
+        "id": f"po-{uuid4().hex[:8]}",
+        "backlog_item_id": request.backlog_item_id,
+        "supplier_name": request.supplier_name,
+        "quantity": request.quantity,
+        "unit_cost": request.unit_cost,
+        "expected_delivery_date": request.expected_delivery_date,
+        "status": "Pending",
+        "created_date": datetime.now().strftime("%Y-%m-%d"),
+        "notes": request.notes
+    }
+    purchase_orders.append(purchase_order)
+    return purchase_order
+
+@app.get("/api/purchase-orders/{backlog_item_id}", response_model=PurchaseOrder)
+def get_purchase_order_by_backlog_item(backlog_item_id: str):
+    """Get the purchase order raised against a backlog item"""
+    po = next((p for p in purchase_orders if p["backlog_item_id"] == backlog_item_id), None)
+    if not po:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No purchase order for backlog item {backlog_item_id}"
+        )
+    return po
 
 if __name__ == "__main__":
     import uvicorn

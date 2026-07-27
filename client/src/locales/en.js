@@ -251,6 +251,36 @@ export default {
     }
   },
 
+  // Purchase Orders
+  purchaseOrder: {
+    actions: 'Actions',
+    createPO: 'Create PO',
+    viewPO: 'View PO',
+    createTitle: 'Create Purchase Order',
+    viewTitle: 'Purchase Order Details',
+    shortageForItem: 'Shortage for this item',
+    units: 'units',
+    supplierName: 'Supplier Name',
+    supplierNamePlaceholder: 'Enter supplier name',
+    quantity: 'Quantity',
+    unitCost: 'Unit Cost',
+    totalCost: 'Total Cost',
+    expectedDeliveryDate: 'Expected Delivery Date',
+    notes: 'Notes',
+    notesPlaceholder: 'Additional notes (optional)',
+    status: 'Status',
+    createdDate: 'Created Date',
+    statusPending: 'Pending',
+    submit: 'Create Purchase Order',
+    submitting: 'Creating...',
+    cancel: 'Cancel',
+    close: 'Close',
+    loading: 'Loading purchase order...',
+    loadError: 'Failed to load purchase order.',
+    submitError: 'Failed to create purchase order. Please try again.',
+    notFound: 'No purchase order found for this item.'
+  },
+
   // Filters
   filters: {
     timePeriod: 'Time Period',

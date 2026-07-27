@@ -251,6 +251,36 @@ export default {
     }
   },
 
+  // Purchase Orders
+  purchaseOrder: {
+    actions: '操作',
+    createPO: '発注書作成',
+    viewPO: '発注書を表示',
+    createTitle: '発注書の作成',
+    viewTitle: '発注書の詳細',
+    shortageForItem: 'この品目の不足数',
+    units: '単位',
+    supplierName: 'サプライヤー名',
+    supplierNamePlaceholder: 'サプライヤー名を入力',
+    quantity: '数量',
+    unitCost: '単価',
+    totalCost: '合計金額',
+    expectedDeliveryDate: '納品予定日',
+    notes: '備考',
+    notesPlaceholder: '備考（任意）',
+    status: 'ステータス',
+    createdDate: '作成日',
+    statusPending: '保留中',
+    submit: '発注書を作成',
+    submitting: '作成中...',
+    cancel: 'キャンセル',
+    close: '閉じる',
+    loading: '発注書を読み込み中...',
+    loadError: '発注書の読み込みに失敗しました。',
+    submitError: '発注書の作成に失敗しました。もう一度お試しください。',
+    notFound: 'この品目の発注書は見つかりません。'
+  },
+
   // Filters
   filters: {
     timePeriod: '期間',
