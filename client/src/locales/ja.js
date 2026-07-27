@@ -195,7 +195,60 @@ export default {
   // Reports
   reports: {
     title: 'パフォーマンスレポート',
-    description: '四半期業績と月次トレンドの表示'
+    description: '四半期業績と月次トレンドの表示',
+    loadError: 'レポートの読み込みに失敗しました',
+    quarterly: {
+      title: '四半期業績',
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総収益',
+      avgOrderValue: '平均注文額',
+      fulfillmentRate: '履行率'
+    },
+    monthlyTrend: {
+      title: '月次収益トレンド'
+    },
+    monthOverMonth: {
+      title: '前月比分析',
+      month: '月',
+      orders: '注文数',
+      revenue: '収益',
+      change: '変化',
+      growthRate: '成長率',
+      notApplicable: '該当なし'
+    },
+    summary: {
+      totalRevenueYTD: '総収益（年初来）',
+      avgMonthlyRevenue: '平均月次収益',
+      totalOrdersYTD: '総注文数（年初来）',
+      bestQuarter: '最高業績四半期'
+    }
+  },
+
+  // Backlog
+  backlog: {
+    title: 'バックログ管理',
+    description: '在庫不足の追跡と解決',
+    shortages: '在庫不足',
+    noShortages: 'バックログ項目なし - すべての注文を履行できます',
+    table: {
+      orderId: '注文ID',
+      sku: 'SKU',
+      itemName: '品目名',
+      quantityNeeded: '必要数量',
+      quantityAvailable: '在庫数量',
+      shortage: '不足',
+      daysDelayed: '遅延日数',
+      priority: '優先度'
+    },
+    unitsShort: '単位不足',
+    days: '日',
+    stats: {
+      highPriority: '優先度：高',
+      mediumPriority: '優先度：中',
+      lowPriority: '優先度：低',
+      totalItems: 'バックログ項目総数'
+    }
   },
 
   // Filters
@@ -205,7 +258,8 @@ export default {
     category: 'カテゴリ',
     orderStatus: '注文ステータス',
     all: 'すべて',
-    allMonths: 'すべての月'
+    allMonths: 'すべての月',
+    resetAll: 'すべてのフィルターをリセット'
   },
 
   // Statuses
