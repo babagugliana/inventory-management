@@ -2,14 +2,17 @@
   <div class="profile-menu">
     <button
       class="profile-button"
+      :class="{ collapsed }"
+      :title="collapsed ? currentUser.name : null"
       @click="toggleDropdown"
       @blur="handleBlur"
     >
       <div class="avatar">
         {{ getInitials(currentUser.name) }}
       </div>
-      <span class="profile-name">{{ currentUser.name }}</span>
+      <span v-if="!collapsed" class="profile-name">{{ currentUser.name }}</span>
       <svg
+        v-if="!collapsed"
         class="chevron"
         :class="{ 'chevron-open': isDropdownOpen }"
         width="16"
@@ -78,6 +81,13 @@ import { ref, computed } from 'vue'
 import { useAuth } from '../composables/useAuth'
 import { useI18n } from '../composables/useI18n'
 
+defineProps({
+  collapsed: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const { currentUser, logout, getInitials } = useAuth()
 const { t } = useI18n()
 
@@ -136,6 +146,11 @@ const handleLogout = () => {
 .profile-button:hover {
   background: #f8fafc;
   border-color: #cbd5e1;
+}
+
+.profile-button.collapsed {
+  justify-content: center;
+  padding: 0.5rem;
 }
 
 .avatar {

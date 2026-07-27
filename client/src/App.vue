@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div class="app" :class="{ 'sidebar-collapsed': isCollapsed }">
     <AppSidebar
       @show-profile-details="showProfileDetails = true"
       @show-tasks="showTasks = true"
@@ -30,6 +30,7 @@ import { ref, onMounted, computed } from 'vue'
 import { api } from './api'
 import { useAuth } from './composables/useAuth'
 import { useI18n } from './composables/useI18n'
+import { useSidebar } from './composables/useSidebar'
 import AppSidebar from './components/AppSidebar.vue'
 import PageToolbar from './components/PageToolbar.vue'
 import ProfileDetailsModal from './components/ProfileDetailsModal.vue'
@@ -46,6 +47,7 @@ export default {
   setup() {
     const { currentUser } = useAuth()
     const { t } = useI18n()
+    const { isCollapsed } = useSidebar()
     const showProfileDetails = ref(false)
     const showTasks = ref(false)
     const apiTasks = ref([])
@@ -119,6 +121,7 @@ export default {
 
     return {
       t,
+      isCollapsed,
       showProfileDetails,
       showTasks,
       tasks,
@@ -247,6 +250,10 @@ body {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
   min-height: 100vh;
+}
+
+.app.sidebar-collapsed {
+  --sidebar-width: 64px;
 }
 
 .main-content {
