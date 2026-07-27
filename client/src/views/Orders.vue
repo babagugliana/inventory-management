@@ -22,6 +22,42 @@
         </div>
       </div>
 
+      <div v-if="restockOrders.length" class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ t('restocking.submittedOrders') }}</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>{{ t('restocking.orderId') }}</th>
+                <th>{{ t('restocking.createdDate') }}</th>
+                <th>{{ t('restocking.itemCount') }}</th>
+                <th>{{ t('inventory.table.totalValue') }}</th>
+                <th>{{ t('restocking.leadTime') }}</th>
+                <th>{{ t('restocking.expectedDelivery') }}</th>
+                <th>{{ t('restocking.status') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="restockOrder in restockOrders" :key="restockOrder.id">
+                <td><strong>{{ restockOrder.id }}</strong></td>
+                <td>{{ formatDate(restockOrder.created_date) }}</td>
+                <td>{{ restockOrder.item_count }}</td>
+                <td><strong>{{ currencySymbol }}{{ restockOrder.total_cost.toLocaleString() }}</strong></td>
+                <td>{{ restockOrder.max_lead_time_days }} {{ t('restocking.leadTimeDays') }}</td>
+                <td>{{ formatDate(restockOrder.expected_delivery) }}</td>
+                <td>
+                  <span :class="['badge', getOrderStatusClass(restockOrder.status)]">
+                    {{ restockOrder.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">{{ t('orders.allOrders') }} ({{ orders.length }})</h3>
@@ -90,6 +126,7 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockOrders = ref([])
 
     // Use shared filters
     const {
@@ -124,6 +161,14 @@ export default {
       loadOrders()
     })
 
+    const loadRestockOrders = async () => {
+      try {
+        restockOrders.value = await api.getRestockOrders()
+      } catch (err) {
+        console.error('Failed to load restock orders:', err)
+      }
+    }
+
     const getOrdersByStatus = (status) => {
       return orders.value.filter(order => order.status === status)
     }
@@ -148,13 +193,17 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    onMounted(() => {
+      loadOrders()
+      loadRestockOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockOrders,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,

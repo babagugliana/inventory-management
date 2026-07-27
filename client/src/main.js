@@ -7,6 +7,7 @@ import Orders from './views/Orders.vue'
 import Demand from './views/Demand.vue'
 import Spending from './views/Spending.vue'
 import Reports from './views/Reports.vue'
+import Restocking from './views/Restocking.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,6 +18,7 @@ const router = createRouter({
     { path: '/inventory', component: Inventory, meta: { titleKey: 'inventory.title', subtitleKey: 'inventory.description' } },
     { path: '/orders', component: Orders, meta: { titleKey: 'orders.title', subtitleKey: 'orders.description' } },
     { path: '/demand', component: Demand, meta: { titleKey: 'demand.title', subtitleKey: 'demand.description' } },
+    { path: '/restocking', component: Restocking, meta: { titleKey: 'restocking.title', subtitleKey: 'restocking.description' } },
     { path: '/spending', component: Spending, meta: { titleKey: 'finance.title', subtitleKey: 'finance.description' } },
     { path: '/reports', component: Reports, meta: { titleKey: 'reports.title', subtitleKey: 'reports.description' } }
   ]

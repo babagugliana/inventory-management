@@ -7,6 +7,7 @@ export default {
     finance: '財務',
     demandForecast: '需要予測',
     reports: 'レポート',
+    restocking: '補充計画',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム',
     collapseSidebar: 'サイドバーを折りたたむ',
@@ -279,6 +280,32 @@ export default {
     loadError: '発注書の読み込みに失敗しました。',
     submitError: '発注書の作成に失敗しました。もう一度お試しください。',
     notFound: 'この品目の発注書は見つかりません。'
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充計画',
+    description: '需要予測に基づき予算内で補充を計画',
+    budget: '予算',
+    budgetLabel: '利用可能な予算',
+    totalCost: '合計金額',
+    remaining: '残額',
+    recommended: '推奨品目',
+    placeOrder: '発注する',
+    placing: '送信中...',
+    orderPlaced: '補充発注を送信しました',
+    orderError: '補充発注の送信に失敗しました',
+    noRecommendations: 'この予算では補充できる品目がありません',
+    submittedOrders: '送信済み発注',
+    leadTime: 'リードタイム',
+    leadTimeDays: '日',
+    expectedDelivery: '納品予定日',
+    demandGap: '需要ギャップ',
+    recommendedQty: '推奨数量',
+    orderId: '発注ID',
+    createdDate: '作成日',
+    itemCount: '品目数',
+    status: 'ステータス'
   },
 
   // Filters

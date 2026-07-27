@@ -103,6 +103,11 @@ const navItems = [
     icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M2.5 17.5H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3.5 13L7.5 9L11 12L17 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5H17V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
   },
   {
+    path: '/restocking',
+    labelKey: 'nav.restocking',
+    icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2.5V17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M13.5 5.5H8.5C7.4 5.5 6.5 6.4 6.5 7.5C6.5 8.6 7.4 9.5 8.5 9.5H11.5C12.6 9.5 13.5 10.4 13.5 11.5C13.5 12.6 12.6 13.5 11.5 13.5H6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  },
+  {
     path: '/reports',
     labelKey: 'nav.reports',
     icon: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 2.5H12L15.5 6V17.5H5V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 2.5V6H15.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7.5 10H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7.5 13H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'

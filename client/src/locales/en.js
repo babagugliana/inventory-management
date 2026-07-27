@@ -7,6 +7,7 @@ export default {
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
     reports: 'Reports',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System',
     collapseSidebar: 'Collapse sidebar',
@@ -279,6 +280,32 @@ export default {
     loadError: 'Failed to load purchase order.',
     submitError: 'Failed to create purchase order. Please try again.',
     notFound: 'No purchase order found for this item.'
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Plan restocking against a budget using demand forecasts',
+    budget: 'Budget',
+    budgetLabel: 'Available Budget',
+    totalCost: 'Total Cost',
+    remaining: 'Remaining',
+    recommended: 'Recommended Items',
+    placeOrder: 'Place Order',
+    placing: 'Submitting...',
+    orderPlaced: 'Restocking order submitted',
+    orderError: 'Failed to submit restocking order',
+    noRecommendations: 'No items can be restocked within this budget',
+    submittedOrders: 'Submitted Orders',
+    leadTime: 'Lead Time',
+    leadTimeDays: 'days',
+    expectedDelivery: 'Expected Delivery',
+    demandGap: 'Demand Gap',
+    recommendedQty: 'Recommended Qty',
+    orderId: 'Order ID',
+    createdDate: 'Created',
+    itemCount: 'Items',
+    status: 'Status'
   },
 
   // Filters
