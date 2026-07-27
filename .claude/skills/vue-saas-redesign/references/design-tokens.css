@@ -1,0 +1,103 @@
+/* ---------------------------------------------------------------------------
+ * Design tokens — Factory Inventory Management System
+ *
+ * Insert this block at the TOP of App.vue's global (unscoped) <style> block.
+ * Every value here is derived from a hex already present in client/src/ —
+ * this is a structural redesign, NOT a rebrand. The slate identity is preserved.
+ *
+ * Source counts (occurrences in client/src at time of writing):
+ *   #64748b x59  #e2e8f0 x58  #0f172a x51  #3b82f6 x22  #2563eb x21
+ *   #f1f5f9 x20  #f8fafc x19  #ef4444 x16  #dc2626 x14  #10b981 x14
+ *   #cbd5e1 x13  #f59e0b x11  #991b1b x11
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* --- Surfaces ------------------------------------------------------- */
+  --color-canvas:        #f8fafc;  /* page background */
+  --color-surface:       #ffffff;  /* cards, sidebar, toolbars */
+  --color-surface-sunk:  #f8fafc;  /* nested wells inside cards */
+  --color-tint:          #f1f5f9;  /* hover states, table header rows */
+
+  /* --- Borders -------------------------------------------------------- */
+  --color-border:        #e2e8f0;  /* default hairline */
+  --color-border-strong: #cbd5e1;  /* emphasis, form controls */
+
+  /* --- Text ----------------------------------------------------------- */
+  --color-ink:           #0f172a;  /* headings, primary numbers */
+  --color-ink-body:      #1e293b;  /* body copy */
+  --color-ink-mid:       #334155;  /* secondary copy */
+  --color-ink-muted:     #64748b;  /* labels, captions, inactive nav */
+  --color-ink-subtle:    #94a3b8;  /* placeholder, disabled */
+
+  /* --- Accent --------------------------------------------------------- */
+  --color-accent:        #2563eb;
+  --color-accent-hover:  #1d4ed8;
+  --color-accent-light:  #3b82f6;
+  --color-accent-bg:     #eff6ff;  /* active nav pill, info surfaces */
+
+  /* --- Status --------------------------------------------------------- */
+  --color-success:       #059669;
+  --color-success-bg:    #ecfdf5;
+  --color-warning:       #b45309;
+  --color-warning-bg:    #fffbeb;
+  --color-danger:        #dc2626;
+  --color-danger-bg:     #fef2f2;
+  --color-info:          #2563eb;
+  --color-info-bg:       #eff6ff;
+
+  /* --- Spacing scale --------------------------------------------------
+   * Use these instead of ad-hoc rem values. The app previously mixed
+   * 0.375rem / 0.625rem / 0.813rem / 0.938rem / 1.25rem arbitrarily.
+   * ------------------------------------------------------------------- */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* --- Radius --------------------------------------------------------- */
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:  10px;   /* default for cards */
+  --radius-xl:  14px;
+  --radius-full: 999px;
+
+  /* --- Elevation ------------------------------------------------------
+   * Modern SaaS leans on borders, not drop shadows. Keep these subtle;
+   * --shadow-md is for overlays only (modals, popovers).
+   * ------------------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 8px 24px -4px rgba(15, 23, 42, 0.12);
+
+  /* --- Typography ----------------------------------------------------- */
+  --text-xs:    0.75rem;    /* 12px - micro labels */
+  --text-sm:    0.8125rem;  /* 13px - captions, table cells */
+  --text-base:  0.875rem;   /* 14px - body, nav */
+  --text-md:    0.9375rem;  /* 15px - emphasised body */
+  --text-lg:    1.125rem;   /* 18px - card titles */
+  --text-xl:    1.5rem;     /* 24px - page title */
+  --text-2xl:   1.875rem;   /* 30px - stat values */
+
+  --weight-normal:   400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.5;
+
+  /* --- Layout --------------------------------------------------------- */
+  --sidebar-width:    240px;
+  --content-max:     1440px;
+  --content-pad-x: var(--space-8);
+  --content-pad-y: var(--space-6);
+
+  /* --- Motion --------------------------------------------------------- */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+}
