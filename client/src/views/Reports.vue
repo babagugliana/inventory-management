@@ -1,10 +1,5 @@
 <template>
   <div class="reports">
-    <div class="page-header">
-      <h2>Performance Reports</h2>
-      <p>View quarterly performance metrics and monthly trends</p>
-    </div>
-
     <div v-if="loading" class="loading">Loading reports...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
@@ -321,14 +316,6 @@ export default {
   padding: 0;
 }
 
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
 .card-header {
   margin-bottom: 1.5rem;
 }
@@ -336,7 +323,7 @@ export default {
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-ink);
   margin: 0;
 }
 
@@ -346,21 +333,21 @@ export default {
 }
 
 .reports-table th {
-  background: #f8fafc;
+  background: var(--color-tint);
   padding: 0.75rem;
   text-align: left;
   font-weight: 600;
-  color: #64748b;
-  border-bottom: 2px solid #e2e8f0;
+  color: var(--color-ink-muted);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .reports-table td {
   padding: 0.75rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .reports-table tr:hover {
-  background: #f8fafc;
+  background: var(--color-surface-sunk);
 }
 
 .chart-container {
@@ -393,94 +380,63 @@ export default {
 
 .bar {
   width: 100%;
-  background: linear-gradient(to top, #3b82f6, #60a5fa);
+  /* #60a5fa has no token equivalent; mapped to the nearest existing token,
+     --color-accent-light, which also matches the first stop and flattens
+     this into a single-tone bar rather than a two-tone gradient. */
+  background: linear-gradient(to top, var(--color-accent-light), var(--color-accent-light));
   border-radius: 4px 4px 0 0;
   transition: all 0.3s;
   cursor: pointer;
 }
 
 .bar:hover {
-  background: linear-gradient(to top, #2563eb, #3b82f6);
+  background: linear-gradient(to top, var(--color-accent), var(--color-accent-light));
 }
 
 .bar-label {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--color-ink-muted);
   text-align: center;
   transform: rotate(-45deg);
   white-space: nowrap;
   margin-top: 1.5rem;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.stat-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #3b82f6;
-}
-
 .stat-label {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-ink-muted);
   margin-bottom: 0.5rem;
 }
 
 .stat-value {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #0f172a;
-}
-
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.badge.success {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.badge.warning {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.badge.danger {
-  background: #fee2e2;
-  color: #991b1b;
+  color: var(--color-ink);
 }
 
 .positive-change {
-  color: #16a34a;
+  /* #16a34a has no exact token; mapped to the nearest existing token, --color-success. */
+  color: var(--color-success);
   font-weight: 600;
 }
 
 .negative-change {
-  color: #dc2626;
+  color: var(--color-danger);
   font-weight: 600;
 }
 
 .loading {
   text-align: center;
   padding: 3rem;
-  color: #64748b;
+  color: var(--color-ink-muted);
 }
 
 .error {
-  background: #fee2e2;
-  color: #991b1b;
+  /* #fee2e2/#991b1b have no exact tokens; mapped to the nearest existing
+     tokens, --color-danger-bg / --color-danger. */
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
   padding: 1rem;
   border-radius: 8px;
   margin: 1rem 0;

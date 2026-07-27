@@ -168,9 +168,12 @@ const handleLogout = () => {
 }
 
 .dropdown-menu {
+  /* Lives in the sidebar footer now, so it opens upward and to the right
+     instead of the old top-nav downward/right-aligned popover — otherwise
+     it renders below the viewport. */
   position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
   min-width: 280px;
   background: white;
   border: 1px solid #e2e8f0;

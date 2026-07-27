@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    reports: 'Reports',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -13,6 +14,7 @@ export default {
   // Dashboard
   dashboard: {
     title: 'Overview',
+    description: 'Supply chain performance at a glance',
     kpi: {
       title: 'Key Performance Indicators',
       inventoryTurnover: 'Inventory Turnover Rate',
@@ -186,6 +188,12 @@ export default {
       trend: 'Trend',
       period: 'Period'
     }
+  },
+
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    description: 'View quarterly performance metrics and monthly trends'
   },
 
   // Filters
