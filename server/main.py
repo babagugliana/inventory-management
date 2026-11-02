@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field
 from mock_data import inventory_items, orders, demand_forecasts, backlog_items, spending_summary, monthly_spending, category_spending, recent_transactions, purchase_orders
 
@@ -103,6 +103,7 @@ class BacklogItem(BaseModel):
     days_delayed: int
     priority: str
     has_purchase_order: Optional[bool] = False
+    purchase_order_id: Optional[str] = None
 
 class PurchaseOrder(BaseModel):
     id: str
@@ -117,11 +118,24 @@ class PurchaseOrder(BaseModel):
 
 class CreatePurchaseOrderRequest(BaseModel):
     backlog_item_id: str
-    supplier_name: str
-    quantity: int
-    unit_cost: float
+    supplier_name: str = Field(min_length=1)
+    quantity: int = Field(gt=0)
+    unit_cost: float = Field(ge=0)
     expected_delivery_date: str
     notes: Optional[str] = None
+
+class Task(BaseModel):
+    # camelCase dueDate matches the shape the Tasks modal already uses for mock tasks
+    id: str
+    title: str
+    priority: Literal["high", "medium", "low"]
+    dueDate: str
+    status: Literal["pending", "completed"]
+
+class CreateTaskRequest(BaseModel):
+    title: str = Field(min_length=1)
+    priority: Literal["high", "medium", "low"]
+    dueDate: str
 
 class RestockingOrderItemRequest(BaseModel):
     sku: str
@@ -261,15 +275,80 @@ def create_restocking_order(request: CreateRestockingOrderRequest):
 @app.get("/api/backlog", response_model=List[BacklogItem])
 def get_backlog():
     """Get backlog items with purchase order status"""
-    # Add has_purchase_order flag to each backlog item
     result = []
     for item in backlog_items:
         item_dict = dict(item)
-        # Check if this backlog item has a purchase order
-        has_po = any(po["backlog_item_id"] == item["id"] for po in purchase_orders)
-        item_dict["has_purchase_order"] = has_po
+        po = next((po for po in purchase_orders if po["backlog_item_id"] == item["id"]), None)
+        item_dict["has_purchase_order"] = po is not None
+        # The Dashboard decides between "Create PO" and "View PO" from purchase_order_id
+        item_dict["purchase_order_id"] = po["id"] if po else None
         result.append(item_dict)
     return result
+
+@app.post("/api/purchase-orders", response_model=PurchaseOrder, status_code=201)
+def create_purchase_order(request: CreatePurchaseOrderRequest):
+    """Create a purchase order for a backlog item (in memory; cleared on restart)"""
+    if not any(item["id"] == request.backlog_item_id for item in backlog_items):
+        raise HTTPException(status_code=404, detail=f"Backlog item {request.backlog_item_id} not found")
+    if any(po["backlog_item_id"] == request.backlog_item_id for po in purchase_orders):
+        raise HTTPException(status_code=400, detail="A purchase order already exists for this backlog item")
+
+    po = {
+        **request.model_dump(),
+        "id": f"PO-{len(purchase_orders) + 1:04d}",
+        "status": "Pending",
+        "created_date": datetime.now().date().isoformat(),
+    }
+    purchase_orders.append(po)
+    return po
+
+@app.get("/api/purchase-orders/{backlog_item_id}", response_model=PurchaseOrder)
+def get_purchase_order_by_backlog_item(backlog_item_id: str):
+    """Get the purchase order for a backlog item"""
+    po = next((po for po in purchase_orders if po["backlog_item_id"] == backlog_item_id), None)
+    if not po:
+        raise HTTPException(status_code=404, detail=f"Purchase order for backlog item {backlog_item_id} not found")
+    return po
+
+# Tasks created through the Tasks modal; in memory only, cleared on server restart.
+# The modal's built-in sample tasks use numeric ids 1-4, so API tasks use "task-N" strings
+# to keep App.vue's "is this a mock task?" id check from matching the wrong task.
+tasks: List[dict] = []
+_task_seq = 0
+
+def _find_task(task_id: str) -> dict:
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    return task
+
+@app.get("/api/tasks", response_model=List[Task])
+def get_tasks():
+    """Get tasks, newest first"""
+    return list(reversed(tasks))
+
+@app.post("/api/tasks", response_model=Task, status_code=201)
+def create_task(request: CreateTaskRequest):
+    """Create a pending task"""
+    global _task_seq
+    _task_seq += 1
+    task = {**request.model_dump(), "id": f"task-{_task_seq}", "status": "pending"}
+    tasks.append(task)
+    return task
+
+@app.patch("/api/tasks/{task_id}", response_model=Task)
+def toggle_task(task_id: str):
+    """Toggle a task between pending and completed"""
+    task = _find_task(task_id)
+    task["status"] = "completed" if task["status"] == "pending" else "pending"
+    return task
+
+@app.delete("/api/tasks/{task_id}")
+def delete_task(task_id: str):
+    """Delete a task"""
+    task = _find_task(task_id)
+    tasks.remove(task)
+    return {"deleted": task_id}
 
 @app.get("/api/dashboard/summary")
 def get_dashboard_summary(
@@ -319,24 +398,34 @@ def get_recent_transactions():
     """Get recent transactions"""
     return recent_transactions
 
-@app.get("/api/reports/quarterly")
-def get_quarterly_reports():
-    """Get quarterly performance reports"""
-    # Calculate quarterly statistics from orders
-    quarters = {}
+def quarter_label(order_date: str) -> Optional[str]:
+    """Return 'Q<n>-<year>' for an ISO date string, or None if it can't be parsed.
 
-    for order in orders:
-        order_date = order.get('order_date', '')
-        # Determine quarter
-        if '2025-01' in order_date or '2025-02' in order_date or '2025-03' in order_date:
-            quarter = 'Q1-2025'
-        elif '2025-04' in order_date or '2025-05' in order_date or '2025-06' in order_date:
-            quarter = 'Q2-2025'
-        elif '2025-07' in order_date or '2025-08' in order_date or '2025-09' in order_date:
-            quarter = 'Q3-2025'
-        elif '2025-10' in order_date or '2025-11' in order_date or '2025-12' in order_date:
-            quarter = 'Q4-2025'
-        else:
+    Derived from the date itself so orders from any year are counted
+    (QUARTER_MAP only knows 2025 and is used for the filter dropdown)."""
+    try:
+        year, month = int(order_date[:4]), int(order_date[5:7])
+    except (ValueError, TypeError):
+        return None
+    if not 1 <= month <= 12:
+        return None
+    return f"Q{(month - 1) // 3 + 1}-{year}"
+
+@app.get("/api/reports/quarterly")
+def get_quarterly_reports(
+    warehouse: Optional[str] = None,
+    category: Optional[str] = None,
+    status: Optional[str] = None,
+    month: Optional[str] = None
+):
+    """Get quarterly performance reports with optional filtering"""
+    filtered_orders = apply_filters(orders, warehouse, category, status)
+    filtered_orders = filter_by_month(filtered_orders, month)
+
+    quarters = {}
+    for order in filtered_orders:
+        quarter = quarter_label(order.get('order_date', ''))
+        if quarter is None:
             continue
 
         if quarter not in quarters:
@@ -345,7 +434,8 @@ def get_quarterly_reports():
                 'total_orders': 0,
                 'total_revenue': 0,
                 'delivered_orders': 0,
-                'avg_order_value': 0
+                'avg_order_value': 0,
+                'fulfillment_rate': 0
             }
 
         quarters[quarter]['total_orders'] += 1
@@ -353,46 +443,54 @@ def get_quarterly_reports():
         if order.get('status') == 'Delivered':
             quarters[quarter]['delivered_orders'] += 1
 
-    # Calculate averages and fulfillment rate
     result = []
-    for q, data in quarters.items():
-        if data['total_orders'] > 0:
-            data['avg_order_value'] = round(data['total_revenue'] / data['total_orders'], 2)
-            data['fulfillment_rate'] = round((data['delivered_orders'] / data['total_orders']) * 100, 1)
+    for data in quarters.values():
+        data['avg_order_value'] = round(data['total_revenue'] / data['total_orders'], 2)
+        data['fulfillment_rate'] = round((data['delivered_orders'] / data['total_orders']) * 100, 1)
+        # Round after averaging so summed floats don't leak noise like 7551977.410000001
+        data['total_revenue'] = round(data['total_revenue'], 2)
         result.append(data)
 
-    # Sort by quarter
-    result.sort(key=lambda x: x['quarter'])
+    # 'Q1-2026' must sort after 'Q4-2025', so order by (year, quarter) rather than the string
+    result.sort(key=lambda x: (int(x['quarter'][3:]), x['quarter'][:2]))
     return result
 
 @app.get("/api/reports/monthly-trends")
-def get_monthly_trends():
-    """Get month-over-month trends"""
-    months = {}
+def get_monthly_trends(
+    warehouse: Optional[str] = None,
+    category: Optional[str] = None,
+    status: Optional[str] = None,
+    month: Optional[str] = None
+):
+    """Get month-over-month trends with optional filtering"""
+    filtered_orders = apply_filters(orders, warehouse, category, status)
+    filtered_orders = filter_by_month(filtered_orders, month)
 
-    for order in orders:
+    months = {}
+    for order in filtered_orders:
         order_date = order.get('order_date', '')
         if not order_date:
             continue
 
         # Extract month (format: YYYY-MM-DD)
-        month = order_date[:7]  # Gets YYYY-MM
+        order_month = order_date[:7]  # Gets YYYY-MM
 
-        if month not in months:
-            months[month] = {
-                'month': month,
+        if order_month not in months:
+            months[order_month] = {
+                'month': order_month,
                 'order_count': 0,
                 'revenue': 0,
                 'delivered_count': 0
             }
 
-        months[month]['order_count'] += 1
-        months[month]['revenue'] += order.get('total_value', 0)
+        months[order_month]['order_count'] += 1
+        months[order_month]['revenue'] += order.get('total_value', 0)
         if order.get('status') == 'Delivered':
-            months[month]['delivered_count'] += 1
+            months[order_month]['delivered_count'] += 1
 
-    # Convert to list and sort
     result = list(months.values())
+    for data in result:
+        data['revenue'] = round(data['revenue'], 2)
     result.sort(key=lambda x: x['month'])
     return result
 

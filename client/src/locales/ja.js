@@ -7,6 +7,8 @@ export default {
     finance: '財務',
     demandForecast: '需要予測',
     restocking: '補充発注',
+    backlog: 'バックログ',
+    reports: 'レポート',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -56,7 +58,10 @@ export default {
       daysDelayed: '遅延日数',
       priority: '優先度',
       unitsShort: '単位不足',
-      days: '日'
+      days: '日',
+      actions: '操作',
+      createPO: '発注書を作成',
+      viewPO: '発注書を表示'
     },
     topProducts: {
       title: '収益別トップ製品',
@@ -244,7 +249,8 @@ export default {
     category: 'カテゴリ',
     orderStatus: '注文ステータス',
     all: 'すべて',
-    allMonths: 'すべての月'
+    allMonths: 'すべての月',
+    reset: 'すべてのフィルターをリセット'
   },
 
   // Statuses
@@ -350,7 +356,8 @@ export default {
     priority: '優先度',
     dueDate: '期限',
     addTask: 'タスクを追加',
-    noTasks: 'タスクがありません。上記からタスクを追加してください！'
+    noTasks: 'タスクがありません。上記からタスクを追加してください！',
+    delete: 'タスクを削除'
   },
 
   // Language
@@ -358,6 +365,103 @@ export default {
     english: 'English',
     japanese: '日本語',
     selectLanguage: '言語を選択'
+  },
+
+  // Reports
+  reports: {
+    title: 'パフォーマンスレポート',
+    description: '四半期ごとの実績指標と月次トレンドを確認します',
+    loading: 'レポートを読み込み中...',
+    loadError: 'レポートの読み込みに失敗しました',
+    empty: '現在のフィルターに一致する注文はありません。',
+    notAvailable: '該当なし',
+    quarterLabel: '{year}年 第{quarter}四半期',
+    quarterly: {
+      title: '四半期パフォーマンス',
+      quarter: '四半期',
+      totalOrders: '総注文数',
+      totalRevenue: '総売上',
+      avgOrderValue: '平均注文金額',
+      fulfillmentRate: '出荷達成率'
+    },
+    trend: {
+      title: '月次売上トレンド'
+    },
+    mom: {
+      title: '前月比分析',
+      month: '月',
+      orders: '注文数',
+      revenue: '売上',
+      change: '増減額',
+      growthRate: '成長率'
+    },
+    stats: {
+      totalRevenue: '総売上',
+      avgMonthlyRevenue: '月平均売上',
+      totalOrders: '総注文数',
+      bestQuarter: '最高実績の四半期'
+    }
+  },
+
+  // Backlog
+  backlog: {
+    title: 'バックログ管理',
+    description: '在庫不足を追跡し解消します',
+    loading: 'バックログを読み込み中...',
+    loadError: 'バックログの読み込みに失敗しました',
+    highPriority: '優先度：高',
+    mediumPriority: '優先度：中',
+    lowPriority: '優先度：低',
+    totalItems: 'バックログ総件数',
+    itemsTitle: 'バックログ一覧',
+    empty: 'バックログはありません - すべての注文を出荷できます！',
+    table: {
+      orderId: '注文ID',
+      sku: 'SKU',
+      itemName: '品名',
+      quantityNeeded: '必要数量',
+      quantityAvailable: '利用可能数量',
+      shortage: '不足数',
+      daysDelayed: '遅延日数',
+      priority: '優先度'
+    },
+    unitsShort: '{count}個不足',
+    days: '{count}日'
+  },
+
+  // 発注書
+  purchaseOrder: {
+    createTitle: '発注書の作成',
+    viewTitle: '発注書の詳細',
+    sku: 'SKU',
+    shortage: '不足数',
+    units: '{count}個',
+    supplier: '仕入先',
+    supplierPlaceholder: '仕入先名を入力',
+    quantity: '数量',
+    unitCost: '単価',
+    total: '合計',
+    expectedDelivery: '納品予定日',
+    notes: '備考',
+    notesPlaceholder: '任意の備考',
+    optional: '任意',
+    submit: '発注書を作成',
+    submitting: '作成中...',
+    poId: '発注書番号',
+    status: 'ステータス',
+    createdDate: '作成日',
+    loading: '発注書を読み込み中...',
+    notFound: '発注書が見つかりません',
+    loadError: '発注書の読み込みに失敗しました',
+    createError: '発注書の作成に失敗しました',
+    noNotes: '-',
+    statuses: {
+      Pending: '保留中',
+      Approved: '承認済み',
+      Ordered: '発注済み',
+      Received: '入荷済み',
+      Cancelled: 'キャンセル'
+    }
   },
 
   // Common
@@ -377,6 +481,14 @@ export default {
 
   // Product Names
   productNames: {
+    // Demand forecast / backlog items
+    'Industrial Widget Type A': '工業用ウィジェット タイプA',
+    'Steel Bearing Assembly': 'スチールベアリングアセンブリ',
+    'High-Temperature Gasket': '耐熱ガスケット',
+    'Electric Motor 5HP': '電動モーター 5馬力',
+    'Oil Filter Cartridge': 'オイルフィルターカートリッジ',
+    'Pressure Relief Valve': '圧力逃し弁',
+    'Logic Controller Board': 'ロジックコントローラーボード',
     'Single Layer PCB Assembly': '単層PCB組立',
     'Dual Layer PCB Assembly': '二層PCB組立',
     'Multi Layer PCB Assembly': '多層PCB組立',

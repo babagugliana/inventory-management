@@ -7,6 +7,8 @@ export default {
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
     restocking: 'Restocking',
+    backlog: 'Backlog',
+    reports: 'Reports',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -56,7 +58,10 @@ export default {
       daysDelayed: 'Days Delayed',
       priority: 'Priority',
       unitsShort: 'units short',
-      days: 'days'
+      days: 'days',
+      actions: 'Actions',
+      createPO: 'Create PO',
+      viewPO: 'View PO'
     },
     topProducts: {
       title: 'Top Products by Revenue',
@@ -244,7 +249,8 @@ export default {
     category: 'Category',
     orderStatus: 'Order Status',
     all: 'All',
-    allMonths: 'All Months'
+    allMonths: 'All Months',
+    reset: 'Reset all filters'
   },
 
   // Statuses
@@ -350,7 +356,8 @@ export default {
     priority: 'Priority',
     dueDate: 'Due Date',
     addTask: 'Add Task',
-    noTasks: 'No tasks yet. Add your first task above!'
+    noTasks: 'No tasks yet. Add your first task above!',
+    delete: 'Delete task'
   },
 
   // Language
@@ -358,6 +365,103 @@ export default {
     english: 'English',
     japanese: 'Japanese',
     selectLanguage: 'Select Language'
+  },
+
+  // Reports
+  reports: {
+    title: 'Performance Reports',
+    description: 'View quarterly performance metrics and monthly trends',
+    loading: 'Loading reports...',
+    loadError: 'Failed to load reports',
+    empty: 'No orders match the current filters.',
+    notAvailable: 'N/A',
+    quarterLabel: 'Q{quarter} {year}',
+    quarterly: {
+      title: 'Quarterly Performance',
+      quarter: 'Quarter',
+      totalOrders: 'Total Orders',
+      totalRevenue: 'Total Revenue',
+      avgOrderValue: 'Avg Order Value',
+      fulfillmentRate: 'Fulfillment Rate'
+    },
+    trend: {
+      title: 'Monthly Revenue Trend'
+    },
+    mom: {
+      title: 'Month-over-Month Analysis',
+      month: 'Month',
+      orders: 'Orders',
+      revenue: 'Revenue',
+      change: 'Change',
+      growthRate: 'Growth Rate'
+    },
+    stats: {
+      totalRevenue: 'Total Revenue',
+      avgMonthlyRevenue: 'Avg Monthly Revenue',
+      totalOrders: 'Total Orders',
+      bestQuarter: 'Best Performing Quarter'
+    }
+  },
+
+  // Backlog
+  backlog: {
+    title: 'Backlog Management',
+    description: 'Track and resolve inventory shortages',
+    loading: 'Loading backlog...',
+    loadError: 'Failed to load backlog',
+    highPriority: 'High Priority',
+    mediumPriority: 'Medium Priority',
+    lowPriority: 'Low Priority',
+    totalItems: 'Total Backlog Items',
+    itemsTitle: 'Backlog Items',
+    empty: 'No backlog items - all orders can be fulfilled!',
+    table: {
+      orderId: 'Order ID',
+      sku: 'SKU',
+      itemName: 'Item Name',
+      quantityNeeded: 'Quantity Needed',
+      quantityAvailable: 'Quantity Available',
+      shortage: 'Shortage',
+      daysDelayed: 'Days Delayed',
+      priority: 'Priority'
+    },
+    unitsShort: '{count} units short',
+    days: '{count} days'
+  },
+
+  // Purchase orders
+  purchaseOrder: {
+    createTitle: 'Create Purchase Order',
+    viewTitle: 'Purchase Order Details',
+    sku: 'SKU',
+    shortage: 'Shortage',
+    units: '{count} units',
+    supplier: 'Supplier',
+    supplierPlaceholder: 'Enter supplier name',
+    quantity: 'Quantity',
+    unitCost: 'Unit Cost',
+    total: 'Total',
+    expectedDelivery: 'Expected Delivery',
+    notes: 'Notes',
+    notesPlaceholder: 'Optional notes',
+    optional: 'optional',
+    submit: 'Create Purchase Order',
+    submitting: 'Creating...',
+    poId: 'PO Number',
+    status: 'Status',
+    createdDate: 'Created',
+    loading: 'Loading purchase order...',
+    notFound: 'Purchase order not found',
+    loadError: 'Failed to load purchase order',
+    createError: 'Failed to create purchase order',
+    noNotes: '-',
+    statuses: {
+      Pending: 'Pending',
+      Approved: 'Approved',
+      Ordered: 'Ordered',
+      Received: 'Received',
+      Cancelled: 'Cancelled'
+    }
   },
 
   // Common
