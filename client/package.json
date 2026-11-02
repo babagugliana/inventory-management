@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:unit": "TZ=America/Los_Angeles node --test 'src/utils/*.test.js' && TZ=Asia/Tokyo node --test 'src/utils/*.test.js' && TZ=UTC node --test 'src/utils/*.test.js'"
   },
   "dependencies": {
     "vue": "^3.4.21",

@@ -476,7 +476,8 @@ export default {
     search: '検索',
     filter: 'フィルター',
     export: 'エクスポート',
-    items: '件'
+    items: '件',
+    notAvailable: '該当なし'
   },
 
   // Product Names

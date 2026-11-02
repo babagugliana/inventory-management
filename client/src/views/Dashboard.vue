@@ -302,6 +302,7 @@ import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
 import { formatCurrency } from '../utils/currency'
+import { parseDate } from '../utils/date'
 import ProductDetailModal from '../components/ProductDetailModal.vue'
 import BacklogDetailModal from '../components/BacklogDetailModal.vue'
 import PurchaseOrderModal from '../components/PurchaseOrderModal.vue'
@@ -376,7 +377,9 @@ export default {
       const deliveredOrders = allOrders.value.filter(o => o.status.toLowerCase() === 'delivered')
       const onTimeDeliveries = deliveredOrders.filter(o => {
         if (o.actual_delivery && o.expected_delivery) {
-          return new Date(o.actual_delivery) <= new Date(o.expected_delivery)
+          const actual = parseDate(o.actual_delivery)
+          const expected = parseDate(o.expected_delivery)
+          return !!actual && !!expected && actual <= expected
         }
         return false
       }).length
@@ -387,8 +390,9 @@ export default {
       let countWithDates = 0
       deliveredOrders.forEach(o => {
         if (o.order_date && o.actual_delivery) {
-          const orderDate = new Date(o.order_date)
-          const deliveryDate = new Date(o.actual_delivery)
+          const orderDate = parseDate(o.order_date)
+          const deliveryDate = parseDate(o.actual_delivery)
+          if (!orderDate || !deliveryDate) return
           const days = Math.round((deliveryDate - orderDate) / (1000 * 60 * 60 * 24))
           totalDays += days
           countWithDates++
@@ -466,8 +470,8 @@ export default {
       if (Array.isArray(allOrders.value)) {
         allOrders.value.forEach(order => {
           if (order && order.order_date) {
-            const date = new Date(order.order_date)
-            const monthIndex = date.getMonth()
+            const date = parseDate(order.order_date)
+            const monthIndex = date ? date.getMonth() : NaN
             // Check if monthIndex is valid (0-11)
             if (!isNaN(monthIndex) && monthIndex >= 0 && monthIndex <= 11) {
               const monthName = monthNames[monthIndex]
@@ -536,8 +540,8 @@ export default {
         .sort((a, b) => {
           // Sort by first order date (earliest first)
           // This ensures products first ordered in January appear before those first ordered in December
-          const dateA = new Date(a.firstOrderDate || '9999-12-31')
-          const dateB = new Date(b.firstOrderDate || '9999-12-31')
+          const dateA = parseDate(a.firstOrderDate || '9999-12-31')
+          const dateB = parseDate(b.firstOrderDate || '9999-12-31')
           if (dateA.getTime() !== dateB.getTime()) {
             return dateA.getTime() - dateB.getTime() // Earlier dates come first
           }
@@ -638,7 +642,8 @@ export default {
       if (!dateString) return '-'
       const { currentLocale } = useI18n()
       const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
-      const date = new Date(dateString)
+      const date = parseDate(dateString)
+      if (!date) return '-'
       return date.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' })
     }
 

@@ -121,6 +121,7 @@
 <script>
 import { ref, computed } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { parseDate } from '../utils/date'
 
 export default {
   name: 'TasksModal',
@@ -168,14 +169,16 @@ export default {
     }
 
     const formatDueDate = (dateString) => {
-      const date = new Date(dateString)
+      const date = parseDate(dateString)
+      if (!date) return t('common.notAvailable')
       const today = new Date()
       today.setHours(0, 0, 0, 0)
       const dueDate = new Date(date)
       dueDate.setHours(0, 0, 0, 0)
 
+      // Both sides are local midnight; round (not ceil) so a DST change (23/25h day) can't shift the count
       const diffTime = dueDate - today
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
 
       const isJapanese = currentLocale.value === 'ja'
 
@@ -198,11 +201,13 @@ export default {
 
       const today = new Date()
       today.setHours(0, 0, 0, 0)
-      const due = new Date(dueDate)
+      const due = parseDate(dueDate)
+      if (!due) return 'upcoming'
       due.setHours(0, 0, 0, 0)
 
+      // Local-midnight comparison: due today is diffDays 0 (urgent), not overdue
       const diffTime = due - today
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
 
       if (diffDays < 0) return 'overdue'
       if (diffDays <= 1) return 'urgent'
