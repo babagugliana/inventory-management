@@ -121,6 +121,7 @@
 import { ref, reactive, computed, watch } from 'vue'
 import { api } from '../api'
 import { useI18n } from '../composables/useI18n'
+import { parseDate } from '../utils/date'
 import { formatCurrencyWithDecimals } from '../utils/currency'
 
 export default {
@@ -172,11 +173,9 @@ export default {
 
     const formatDate = (dateString) => {
       if (!dateString) return '-'
-      // Parse YYYY-MM-DD as a local date: `new Date('2026-12-01')` is UTC midnight and
-      // would render as the previous day in timezones behind UTC.
-      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateString)
-      const date = match ? new Date(+match[1], +match[2] - 1, +match[3]) : new Date(dateString)
-      if (isNaN(date.getTime())) return dateString
+      // parseDate reads YYYY-MM-DD as a local day (not UTC midnight)
+      const date = parseDate(dateString)
+      if (!date) return dateString
       return date.toLocaleDateString(currentLocale.value === 'ja' ? 'ja-JP' : 'en-US', {
         year: 'numeric', month: 'short', day: 'numeric'
       })

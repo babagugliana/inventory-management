@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { api } from '../api'
 import { useI18n } from '../composables/useI18n'
 import { formatCurrencyWithDecimals } from '../utils/currency'
+import { parseDate } from '../utils/date'
 
 const { t, currentCurrency, currentLocale, translateProductName } = useI18n()
 
@@ -76,8 +77,8 @@ const orderLeadTime = computed(() =>
 const money = (usd, decimals = 2) => formatCurrencyWithDecimals(usd, currentCurrency.value, decimals)
 
 const formatDate = (iso) => {
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return ''
+  const d = parseDate(iso)
+  if (!d) return ''
   return d.toLocaleDateString(currentLocale.value === 'ja' ? 'ja-JP' : 'en-US',
     { year: 'numeric', month: 'short', day: 'numeric' })
 }

@@ -88,8 +88,9 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from '../composables/useI18n'
+import { parseDate } from '../utils/date'
 
-const { currentCurrency } = useI18n()
+const { t, currentLocale, currentCurrency } = useI18n()
 
 const currencySymbol = computed(() => {
   return currentCurrency.value === 'JPY' ? '¥' : '$'
@@ -113,9 +114,10 @@ const close = () => {
 }
 
 const formatDate = (dateString) => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
+  // parseDate treats date-only strings as local days (no one-day-early shift)
+  const date = parseDate(dateString)
+  if (!date) return t('common.notAvailable')
+  return date.toLocaleDateString(currentLocale.value === 'ja' ? 'ja-JP' : 'en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'

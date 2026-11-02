@@ -177,6 +177,7 @@ import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { useI18n } from '../composables/useI18n'
 import { formatCurrency as formatCurrencyUtil } from '../utils/currency'
+import { parseDate, monthKey } from '../utils/date'
 import CostDetailModal from '../components/CostDetailModal.vue'
 
 export default {
@@ -185,7 +186,7 @@ export default {
     CostDetailModal
   },
   setup() {
-    const { t, currentCurrency } = useI18n()
+    const { t, currentLocale, currentCurrency } = useI18n()
     const loading = ref(true)
     const error = ref(null)
     const allMonthlySpending = ref([])
@@ -232,7 +233,7 @@ export default {
       }
       // Filter transactions by selected month
       return allTransactions.value.filter(t => {
-        const transactionMonth = new Date(t.date).toISOString().slice(0, 7)
+        const transactionMonth = monthKey(t.date)
         return transactionMonth === selectedPeriod.value
       })
     })
@@ -270,7 +271,7 @@ export default {
 
       // Filter orders by selected month
       return allOrders.value.filter(order => {
-        const orderMonth = new Date(order.order_date).toISOString().slice(0, 7)
+        const orderMonth = monthKey(order.order_date)
         return orderMonth === selectedPeriod.value
       })
     })
@@ -321,8 +322,8 @@ export default {
 
       // Calculate revenue from orders
       allOrders.value.forEach(order => {
-        const orderDate = new Date(order.order_date)
-        const monthIndex = orderDate.getMonth()
+        const orderDate = parseDate(order.order_date)
+        const monthIndex = orderDate ? orderDate.getMonth() : -1
         if (monthIndex >= 0 && monthIndex < 12) {
           revenueByMonth[monthIndex].revenue += order.total_value || 0
         }
@@ -394,14 +395,17 @@ export default {
     }
 
     const formatDate = (dateString) => {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      const date = parseDate(dateString)
+      if (!date) return '-'
+      return date.toLocaleDateString(currentLocale.value === 'ja' ? 'ja-JP' : 'en-US', {
         month: 'short',
         day: 'numeric'
       })
     }
 
     const formatDateShort = (dateString) => {
-      const date = new Date(dateString)
+      const date = parseDate(dateString)
+      if (!date) return '-'
       const month = (date.getMonth() + 1).toString().padStart(2, '0')
       const day = date.getDate().toString().padStart(2, '0')
       const year = date.getFullYear().toString().slice(-2)

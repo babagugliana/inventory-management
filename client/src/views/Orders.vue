@@ -135,6 +135,7 @@ import { api } from '../api'
 import { useFilters } from '../composables/useFilters'
 import { formatCurrencyWithDecimals } from '../utils/currency'
 import { useI18n } from '../composables/useI18n'
+import { parseDate } from '../utils/date'
 
 export default {
   name: 'Orders',
@@ -180,8 +181,8 @@ export default {
 
         // Sort orders by order_date (earliest first)
         orders.value = fetchedOrders.sort((a, b) => {
-          const dateA = new Date(a.order_date)
-          const dateB = new Date(b.order_date)
+          const dateA = parseDate(a.order_date)
+          const dateB = parseDate(b.order_date)
           return dateA - dateB
         })
       } catch (err) {
@@ -213,7 +214,9 @@ export default {
     const formatDate = (dateString) => {
       const { currentLocale } = useI18n()
       const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
-      return new Date(dateString).toLocaleDateString(locale, {
+      const date = parseDate(dateString)
+      if (!date) return '-'
+      return date.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric'

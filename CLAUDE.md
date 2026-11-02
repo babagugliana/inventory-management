@@ -42,6 +42,8 @@ cd client
 npm install && npm run dev
 ```
 
+Tests: backend `cd tests && uv run --project ../server pytest backend`; client date helpers `cd client && npm run test:unit` (runs in three time zones)
+
 ## Key Patterns
 
 **Filter System**: 4 filters (Time Period, Warehouse, Category, Order Status) apply to all data via query params
@@ -61,7 +63,7 @@ npm install && npm run dev
 
 ## Common Issues
 1. Use unique keys in v-for (not `index`) - use `sku`, `month`, etc.
-2. Validate dates before `.getMonth()` calls
+2. Parse dates with `parseDate`/`monthKey` from `client/src/utils/date.js`, never raw `new Date(str)` or `toISOString().slice(0, 7)`: JS reads date-only strings (`2025-12-15`) as UTC, which shows a day early west of UTC. `parseDate` returns null for invalid input
 3. Update Pydantic models when changing JSON data structure
 4. Inventory filters don't support month (no time dimension)
 5. Revenue goals: $800K/month single, $9.6M YTD all months

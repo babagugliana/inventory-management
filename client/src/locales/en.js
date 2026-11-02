@@ -476,6 +476,7 @@ export default {
     search: 'Search',
     filter: 'Filter',
     export: 'Export',
-    items: 'items'
+    items: 'items',
+    notAvailable: 'N/A'
   }
 }

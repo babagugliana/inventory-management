@@ -68,6 +68,7 @@
 <script setup>
 import { useAuth } from '../composables/useAuth'
 import { useI18n } from '../composables/useI18n'
+import { parseDate } from '../utils/date'
 
 const { currentUser, getInitials } = useAuth()
 const { t, currentLocale } = useI18n()
@@ -86,7 +87,9 @@ const close = () => {
 }
 
 const formatDate = (dateString) => {
-  const date = new Date(dateString)
+  // joinDate is date-only; parseDate keeps it on the correct local day
+  const date = parseDate(dateString)
+  if (!date) return t('common.notAvailable')
   const locale = currentLocale.value === 'ja' ? 'ja-JP' : 'en-US'
   return date.toLocaleDateString(locale, {
     year: 'numeric',
