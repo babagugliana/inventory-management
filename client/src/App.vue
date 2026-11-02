@@ -34,6 +34,7 @@
         </nav>
         <LanguageSwitcher />
         <ProfileMenu
+          :tasks="tasks"
           @show-profile-details="showProfileDetails = true"
           @show-tasks="showTasks = true"
         />
