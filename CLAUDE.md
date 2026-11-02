@@ -54,6 +54,9 @@ npm install && npm run dev
 - `GET /api/dashboard/summary` - All filters
 - `GET /api/demand`, `/api/backlog` - No filters
 - `GET /api/spending/*` - Summary, monthly, categories, transactions
+- `GET /api/reports/quarterly`, `/api/reports/monthly-trends` - All filters; quarters derived from order date (any year)
+- `GET/POST /api/tasks`, `PATCH/DELETE /api/tasks/{id}` - In-memory tasks for the Tasks modal; ids are `task-N` strings so they never collide with the numeric mock tasks
+- `POST /api/purchase-orders`, `GET /api/purchase-orders/{backlog_item_id}` - In-memory, one PO per backlog item; `/api/backlog` exposes `purchase_order_id`
 - `GET /api/restocking-orders`, `POST /api/restocking-orders` - In-memory restock orders (cleared on server restart); server prices items from demand forecast `unit_cost` and sets lead time from the slowest item's `lead_time_days`
 
 ## Common Issues

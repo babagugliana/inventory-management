@@ -135,10 +135,10 @@
 <header>
   <div class="eyebrow">Architecture overview</div>
   <h1>Factory Inventory Management System</h1>
-  <p class="lead">A two-tier demo app: a Vue 3 single-page app talks over HTTP/JSON to a FastAPI service. The API serves read-only mock data that it loads from JSON files into memory when it starts. There is no database, no authentication and no write path on the server.</p>
+  <p class="lead">A two-tier demo app: a Vue 3 single-page app talks over HTTP/JSON to a FastAPI service. The API serves mock data that it loads from JSON files into memory when it starts, plus a few write endpoints (restocking orders, tasks, purchase orders) whose data lives only in memory and is lost on restart. There is no database and no authentication.</p>
   <div class="stats">
-    <div class="stat"><b>6</b><span>Routed pages</span></div>
-    <div class="stat"><b>14</b><span>GET endpoints under <code>/api</code></span></div>
+    <div class="stat"><b>8</b><span>Routed pages</span></div>
+    <div class="stat"><b>22</b><span>Endpoints under <code>/api</code> (17 read, 5 write)</span></div>
     <div class="stat"><b>7</b><span>JSON data files</span></div>
     <div class="stat"><b>0</b><span>Databases</span></div>
   </div>
@@ -325,12 +325,14 @@
     <table>
       <thead><tr><th>Page</th><th>Endpoints called</th><th>Reacts to filters</th></tr></thead>
       <tbody>
-        <tr><td><b>Dashboard</b> <code>/</code></td><td><code>dashboard/summary</code>, <code>orders</code>, <code>inventory</code>, <code>backlog</code></td><td><span class="pill on">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill on">Status</span></td></tr>
-        <tr><td><b>Orders</b> <code>/orders</code></td><td><code>orders</code></td><td><span class="pill on">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill on">Status</span></td></tr>
+        <tr><td><b>Dashboard</b> <code>/</code></td><td><code>dashboard/summary</code>, <code>orders</code>, <code>inventory</code>, <code>backlog</code>, <code>purchase-orders</code></td><td><span class="pill on">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill on">Status</span></td></tr>
+        <tr><td><b>Orders</b> <code>/orders</code></td><td><code>orders</code>, <code>restocking-orders</code> (Submitted Orders ignores filters)</td><td><span class="pill on">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill on">Status</span></td></tr>
         <tr><td><b>Inventory</b> <code>/inventory</code></td><td><code>inventory</code></td><td><span class="pill">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill">Status</span></td></tr>
         <tr><td><b>Demand</b> <code>/demand</code></td><td><code>demand</code>, <code>inventory</code></td><td><span class="pill">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill">Status</span></td></tr>
         <tr><td><b>Spending</b> <code>/spending</code></td><td><code>spending/summary</code>, <code>/monthly</code>, <code>/categories</code>, <code>/transactions</code>, <code>orders</code></td><td><span class="pill on">Period</span><span class="pill">Warehouse</span><span class="pill">Category</span><span class="pill">Status</span></td></tr>
-        <tr><td><b>Reports</b> <code>/reports</code></td><td><code>reports/quarterly</code>, <code>reports/monthly-trends</code> (direct axios calls, not through api.js)</td><td><span class="pill">None</span></td></tr>
+        <tr><td><b>Reports</b> <code>/reports</code></td><td><code>reports/quarterly</code>, <code>reports/monthly-trends</code></td><td><span class="pill on">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill on">Status</span></td></tr>
+        <tr><td><b>Restocking</b> <code>/restocking</code></td><td><code>demand</code>, POST <code>restocking-orders</code></td><td><span class="pill">Period</span><span class="pill">Warehouse</span><span class="pill">Category</span><span class="pill">Status</span></td></tr>
+        <tr><td><b>Backlog</b> <code>/backlog</code></td><td><code>backlog</code>, <code>inventory</code></td><td><span class="pill">Period</span><span class="pill on">Warehouse</span><span class="pill on">Category</span><span class="pill">Status</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -338,7 +340,7 @@
 
 <section>
   <h2>API surface</h2>
-  <p class="lead">Every endpoint is a read-only GET. Inventory has no time dimension, so it never accepts <code>month</code>.</p>
+  <p class="lead">Most endpoints are read-only GETs over the JSON data. The write endpoints keep their data in memory only. Inventory has no time dimension, so it never accepts <code>month</code>.</p>
   <div class="card table-scroll">
     <table>
       <thead><tr><th>Endpoint</th><th>Query filters</th><th>Notes</th></tr></thead>
@@ -349,10 +351,13 @@
         <tr><td><code>/api/orders/{id}</code></td><td>none</td><td>Returns 404 if the ID is not found</td></tr>
         <tr><td><code>/api/dashboard/summary</code></td><td>warehouse, category, status, month</td><td>Computed KPIs: inventory value, low stock, pending orders</td></tr>
         <tr><td><code>/api/demand</code></td><td>none</td><td>Demand forecasts</td></tr>
-        <tr><td><code>/api/backlog</code></td><td>none</td><td>Adds <code>has_purchase_order</code> by joining against purchase_orders</td></tr>
+        <tr><td><code>/api/backlog</code></td><td>none</td><td>Adds <code>has_purchase_order</code> and <code>purchase_order_id</code> by joining against purchase orders</td></tr>
         <tr><td><code>/api/spending/{summary|monthly|categories|transactions}</code></td><td>none</td><td>Static slices of <code>spending.json</code> and <code>transactions.json</code></td></tr>
-        <tr><td><code>/api/reports/quarterly</code></td><td>none</td><td>Aggregates orders by quarter: revenue, AOV, fulfillment rate</td></tr>
-        <tr><td><code>/api/reports/monthly-trends</code></td><td>none</td><td>Aggregates orders by <code>YYYY-MM</code></td></tr>
+        <tr><td><code>/api/reports/quarterly</code></td><td>warehouse, category, status, month</td><td>Aggregates orders by quarter (derived from the date, any year): revenue, AOV, fulfillment rate</td></tr>
+        <tr><td><code>/api/reports/monthly-trends</code></td><td>warehouse, category, status, month</td><td>Aggregates orders by <code>YYYY-MM</code></td></tr>
+        <tr><td><code>GET/POST /api/restocking-orders</code></td><td>none</td><td>Server prices items from the forecast and rejects orders over budget; in memory</td></tr>
+        <tr><td><code>GET/POST /api/tasks</code>, <code>PATCH/DELETE /api/tasks/{id}</code></td><td>none</td><td>Tasks modal; in memory; ids are <code>task-N</code> strings</td></tr>
+        <tr><td><code>POST /api/purchase-orders</code>, <code>GET /api/purchase-orders/{backlog_item_id}</code></td><td>none</td><td>One PO per backlog item; in memory</td></tr>
       </tbody>
     </table>
   </div>
@@ -362,12 +367,10 @@
   <h2>Things worth knowing</h2>
   <p class="lead">I found these by reading the code. They aren't documented anywhere else.</p>
   <div class="notes">
-    <div class="note red"><b><span class="tag red">Gap</span>Client calls endpoints the server doesn't have</b><p><code>api.js</code> defines <code>/api/tasks</code> (GET, POST, PATCH, DELETE) and <code>/api/purchase-orders</code>, and <code>App.vue</code> uses the tasks calls for TasksModal. <code>main.py</code> implements neither, so these requests return 404.</p></div>
-    <div class="note amber"><b><span class="tag amber">Orphan</span><code>Backlog.vue</code> has no route</b><p>The view exists and fetches backlog data, but <code>main.js</code> never registers it. The backlog is surfaced only through the Dashboard and its detail modals.</p></div>
     <div class="note amber"><b><span class="tag amber">Quirk</span>Dashboard backlog count ignores filters</b><p><code>total_backlog_items</code> in <code>/dashboard/summary</code> is always <code>len(backlog_items)</code>, whatever filters are active.</p></div>
-    <div class="note amber"><b><span class="tag amber">Quirk</span>Time handling is fixed to 2025</b><p><code>QUARTER_MAP</code> and the report quarter logic only know Q1–Q4 2025. Month filtering is a substring match on the date string.</p></div>
-    <div class="note blue"><b><span class="tag blue">Design</span>The server holds no state between restarts</b><p>Data is loaded once at import, and nothing ever writes it back. Edits to the JSON files take effect only after the API restarts. Change the Pydantic models along with any change to the JSON shape.</p></div>
-    <div class="note blue"><b><span class="tag blue">Design</span>Configuration is hard-coded</b><p>The API base URL (<code>localhost:8001</code>) is hard-coded in <code>api.js</code> and <code>Reports.vue</code>, and CORS allows every origin. That is fine for a local demo and would need changing before any deployment.</p></div>
+    <div class="note amber"><b><span class="tag amber">Quirk</span>Time handling is fixed to 2025</b><p><code>QUARTER_MAP</code>, which backs quarter values in the period filter, only knows Q1–Q4 2025. The reports derive quarters from each order date, so they handle any year. Month filtering is a substring match on the date string.</p></div>
+    <div class="note blue"><b><span class="tag blue">Design</span>The server holds no state between restarts</b><p>Data is loaded once at import, and nothing ever writes it back. Restocking orders, tasks and purchase orders are held in memory and disappear on restart. Edits to the JSON files take effect only after the API restarts. Change the Pydantic models along with any change to the JSON shape.</p></div>
+    <div class="note blue"><b><span class="tag blue">Design</span>Configuration is hard-coded</b><p>The API base URL (<code>localhost:8001</code>) is hard-coded in <code>api.js</code>, and CORS allows every origin. That is fine for a local demo and would need changing before any deployment.</p></div>
   </div>
 </section>
 
