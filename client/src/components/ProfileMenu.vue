@@ -84,8 +84,17 @@ const { t } = useI18n()
 const isDropdownOpen = ref(false)
 const emit = defineEmits(['show-profile-details', 'show-tasks'])
 
+// The full task list (built-in sample tasks plus tasks created through /api/tasks)
+// lives in App.vue, so the parent passes it in; currentUser.tasks alone misses API tasks.
+const props = defineProps({
+  tasks: {
+    type: Array,
+    default: () => []
+  }
+})
+
 const pendingTaskCount = computed(() => {
-  return currentUser.value.tasks.filter(task => task.status === 'pending').length
+  return props.tasks.filter(task => task.status === 'pending').length
 })
 
 const toggleDropdown = () => {
