@@ -6,6 +6,7 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    restocking: '補充発注',
     companyName: '触媒コンポーネンツ',
     subtitle: '在庫管理システム'
   },
@@ -106,6 +107,16 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: {
+      title: '送信済み注文',
+      empty: '送信済みの補充注文はまだありません。補充発注タブで計画して注文してください。',
+      goToRestocking: '補充発注へ',
+      leadTime: 'リードタイム',
+      totalCost: '合計費用',
+      days: '{count}日',
+      loadError: '送信済み注文の読み込みに失敗しました',
+      status: '送信済み'
+    },
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
@@ -186,6 +197,44 @@ export default {
       trend: 'トレンド',
       period: '期間'
     }
+  },
+
+  // Restocking
+  restocking: {
+    title: '補充発注',
+    description: '需要トレンドに基づき、予算内で補充注文を計画します',
+    budget: '補充予算',
+    budgetHelp: '米ドル換算で100単位で調整。上限は全品目の30日予測需要を満たす金額です。',
+    maxBudget: '上限: {amount}',
+    recommendation: '推奨注文',
+    recommendationNote: '品目はトレンド(増加が最優先)、次に需要ギャップの順に並びます。目標数量は予測需要です。在庫数データはありません。',
+    summary: {
+      budget: '予算',
+      totalCost: '合計費用',
+      remaining: '残り予算',
+      items: '品目数',
+      leadTime: '注文リードタイム'
+    },
+    table: {
+      item: '品目',
+      sku: 'SKU',
+      trend: 'トレンド',
+      quantity: '推奨数量',
+      unitCost: '単価',
+      lineTotal: '小計',
+      leadTime: 'リードタイム'
+    },
+    partial: '{target}中{qty}',
+    notFunded: '対象外',
+    days: '{count}日',
+    noRecommendation: '現在の予算ではどの品目も発注できません。予算を増やしてください。',
+    placeOrder: '注文する',
+    placing: '注文中...',
+    confirmationTitle: '注文を受け付けました',
+    confirmationBody: '注文 {number} を送信しました。合計 {total}、予定納期 {date}。',
+    viewOrders: '注文画面で確認',
+    errorFallback: '補充注文を作成できませんでした',
+    loadError: '需要予測の読み込みに失敗しました'
   },
 
   // Filters

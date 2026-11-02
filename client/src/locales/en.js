@@ -6,6 +6,7 @@ export default {
     orders: 'Orders',
     finance: 'Finance',
     demandForecast: 'Demand Forecast',
+    restocking: 'Restocking',
     companyName: 'Catalyst Components',
     subtitle: 'Inventory Management System'
   },
@@ -106,6 +107,16 @@ export default {
     title: 'Orders',
     description: 'View and manage customer orders',
     allOrders: 'All Orders',
+    submittedOrders: {
+      title: 'Submitted Orders',
+      empty: 'No restocking orders have been submitted yet. Use the Restocking tab to plan and place one.',
+      goToRestocking: 'Go to Restocking',
+      leadTime: 'Lead Time',
+      totalCost: 'Total Cost',
+      days: '{count} days',
+      loadError: 'Failed to load submitted orders',
+      status: 'Submitted'
+    },
     totalOrders: 'Total Orders',
     totalRevenue: 'Total Revenue',
     avgOrderValue: 'Avg Order Value',
@@ -186,6 +197,44 @@ export default {
       trend: 'Trend',
       period: 'Period'
     }
+  },
+
+  // Restocking
+  restocking: {
+    title: 'Restocking',
+    description: 'Plan a restocking order within a budget, prioritized by demand trend',
+    budget: 'Restocking Budget',
+    budgetHelp: 'Adjusts in steps of 100 USD. Upper limit covers every item at its full 30-day forecast.',
+    maxBudget: 'Max: {amount}',
+    recommendation: 'Recommended Order',
+    recommendationNote: 'Items are ranked by trend (increasing first), then by demand gap. Target quantity is the forecasted demand. No stock-on-hand data is available.',
+    summary: {
+      budget: 'Budget',
+      totalCost: 'Total Cost',
+      remaining: 'Remaining Budget',
+      items: 'Items',
+      leadTime: 'Order Lead Time'
+    },
+    table: {
+      item: 'Item',
+      sku: 'SKU',
+      trend: 'Trend',
+      quantity: 'Recommended Qty',
+      unitCost: 'Unit Cost',
+      lineTotal: 'Line Total',
+      leadTime: 'Lead Time'
+    },
+    partial: '{qty} of {target}',
+    notFunded: 'Not funded',
+    days: '{count} days',
+    noRecommendation: 'The current budget does not cover any items. Increase the budget to see recommendations.',
+    placeOrder: 'Place Order',
+    placing: 'Placing order...',
+    confirmationTitle: 'Order placed',
+    confirmationBody: 'Order {number} was submitted. Total {total}, expected delivery {date}.',
+    viewOrders: 'View in Orders',
+    errorFallback: 'Failed to place the restocking order',
+    loadError: 'Failed to load demand forecasts'
   },
 
   // Filters
